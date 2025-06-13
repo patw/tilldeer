@@ -72,7 +72,9 @@ async def on_message(message):
     history_list = []
     channel_history = [user async for user in message.channel.history(limit=bot_config["history_lines"] + 1)]
     for history in channel_history:
-        if remove_id(history.content) != remove_id(message.content):
+        # Skip if it's the current message, or if it's a summary from this bot
+        if (remove_id(history.content) != remove_id(message.content) and 
+            not (history.author == client.user and history.content.startswith("Summary:"))):
             history_list.append({
                 "user": history.author.name,
                 "message": remove_id(history.content)
