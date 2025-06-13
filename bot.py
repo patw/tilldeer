@@ -2,6 +2,7 @@ import discord
 import re
 import random
 import os
+import json
 from dotenv import load_dotenv
 
 # Use local models with the OpenAI library and a custom baseurl
@@ -71,17 +72,20 @@ async def on_message(message):
     if message.author == client.user:
         return
     
-    # Grab the channel history so we can add it as context for replies, makes a nice blob of data
+    # Grab the channel history and format as JSON with user/message pairs
     history_list = []
     channel_history = [user async for user in message.channel.history(limit=bot_config["history_lines"] + 1)]
     for history in channel_history:
         if remove_id(history.content) != remove_id(message.content):
-            history_list.append(history.author.name + ": " + remove_id(history.content))
+            history_list.append({
+                "user": history.author.name,
+                "message": remove_id(history.content)
+            })
 
     # Reverse the order of the history so it looks more like the chat log
-    # Then join it into a single text blob
+    # Then convert to JSON string
     history_list.reverse()
-    history_text = '\n'.join(history_list)
+    history_text = json.dumps(history_list)
 
     # Bots answer questions when messaged directly, if we do this, don't bother with triggers
     direct_msg = False
