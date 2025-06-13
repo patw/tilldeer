@@ -1,0 +1,11 @@
+# This file is used by pip to install required python packages
+# Usage: pip install -r requirements.txt
+
+# Discord API
+discord.py
+
+# OpenAI API (yes even for local models)
+openai
+
+# Environment loading
+python-dotenv
