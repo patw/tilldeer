@@ -1,29 +1,33 @@
 import discord
 import re
 import random
-import json
-import sys
+import os
+from dotenv import load_dotenv
 
 # Use local models with the OpenAI library and a custom baseurl
 from openai import OpenAI
 
-# Make sure we're starting with a model.json and an identity.json
-if len(sys.argv) != 3:
-        print("Usage: python discord_llama.py model.json wizard.json")
-        print("Make sure you have the llama.cpp server running already and your model.json points to it.")
-        print("You must also have a pre-configured bot in discord applications:")
-        print("https://discord.com/developers/applications")
-        sys.exit(1)
+# Load environment variables from .env file
+load_dotenv()
 
-# Load the llm config from the json file provided on command line
-model_file = sys.argv[1]
-with open(model_file, 'r') as file:
-    llm_config = json.load(file)
+# LLM Configuration
+llm_config = {
+    "api_key": os.getenv("LLM_API_KEY", "sk-no-key-required"),
+    "base_url": os.getenv("LLM_BASE_URL"),
+    "model": os.getenv("LLM_MODEL")
+}
 
-# Load the identity from the json file provided on command line
-bot_file = sys.argv[2]
-with open(bot_file, 'r') as file:
-    bot_config = json.load(file)
+# Bot Configuration
+bot_config = {
+    "identity": os.getenv("BOT_IDENTITY"),
+    "temperature": float(os.getenv("BOT_TEMPERATURE", "0.7")),
+    "history_lines": int(os.getenv("BOT_HISTORY_LINES", "5")),
+    "discord_token": os.getenv("DISCORD_TOKEN"),
+    "question_prompt": os.getenv("BOT_QUESTION_PROMPT"),
+    "trigger_prompt": os.getenv("BOT_TRIGGER_PROMPT"),
+    "triggers": os.getenv("BOT_TRIGGERS", "").split(","),
+    "trigger_level": float(os.getenv("BOT_TRIGGER_LEVEL", "0.25"))
+}
 
 # Configure discord intent for chatting
 intents = discord.Intents.default()
