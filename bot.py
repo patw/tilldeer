@@ -29,15 +29,7 @@ bot_config = {
 # Configure discord intent for chatting
 intents = discord.Intents.default()
 intents.message_content = True
-
-# Fix SSL certificate issues on macOS
-import ssl
-import certifi
-import aiohttp
-
-ssl_context = ssl.create_default_context(cafile=certifi.where())
-connector = aiohttp.TCPConnector(ssl=ssl_context)
-client = discord.Client(intents=intents, connector=connector)
+client = discord.Client(intents=intents)
 
 # Removes discord IDs from strings
 def remove_id(text):
