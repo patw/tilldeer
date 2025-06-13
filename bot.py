@@ -37,10 +37,10 @@ client = discord.Client(intents=intents)
 def remove_id(text):
     return re.sub(r'<@\d+>', '', text)
 
-# Remove any broadcasts
+# Remove @ from broadcast mentions but keep the words
 def filter_mentions(text):
-    pattern = r'[@]?(\b(here|everyone|channel)\b)'
-    filtered_text = re.sub(pattern, '', text)
+    pattern = r'@(\b(here|everyone|channel)\b)'
+    filtered_text = re.sub(pattern, r'\1', text)
     return filtered_text
 
 def format_prompt(prompt, user, question, history):
