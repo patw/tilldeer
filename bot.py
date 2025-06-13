@@ -86,11 +86,15 @@ async def on_message(message):
 
     # Only respond when mentioned directly
     if client.user.mentioned_in(message):
-        prompt = format_prompt(bot_config["question_prompt"], message.author.name, remove_id(message.content), history_text)
-        bot_response = filter_mentions(llm_local(prompt))
-        message_chunks = split_message(bot_response)
-        for chunk in message_chunks:
-            await message.channel.send(chunk)
+        content = remove_id(message.content).strip().lower()
+        if content.startswith('summarize'):
+            prompt = format_prompt(bot_config["question_prompt"], message.author.name, remove_id(message.content), history_text)
+            bot_response = filter_mentions(llm_local(prompt))
+            message_chunks = split_message(bot_response)
+            for chunk in message_chunks:
+                await message.channel.send(chunk)
+        else:
+            await message.channel.send("I can summarize the discord channel - mention me with the word 'summarize'")
 
 # Run the main loop
 client.run(bot_config["discord_token"])
