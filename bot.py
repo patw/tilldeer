@@ -20,7 +20,6 @@ llm_config = {
 # Bot Configuration
 bot_config = {
     "identity": os.getenv("BOT_IDENTITY"),
-    "temperature": float(os.getenv("BOT_TEMPERATURE", "0.7")),
     "history_lines": int(os.getenv("BOT_HISTORY_LINES", "5")),
     "discord_token": os.getenv("DISCORD_TOKEN"),
     "question_prompt": os.getenv("BOT_QUESTION_PROMPT"),
@@ -58,7 +57,7 @@ def split_message(message):
 def llm_local(prompt):
     client = OpenAI(api_key=llm_config["api_key"], base_url=llm_config["base_url"])
     messages=[{"role": "system", "content": bot_config["identity"]},{"role": "user", "content": prompt}]
-    response = client.chat.completions.create(model=llm_config["model"], max_tokens=2000, temperature=bot_config["temperature"], messages=messages)
+    response = client.chat.completions.create(model=llm_config["model"], messages=messages)
     return response.choices[0].message.content
 
 @client.event
