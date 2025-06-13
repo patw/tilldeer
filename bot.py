@@ -23,10 +23,7 @@ bot_config = {
     "identity": os.getenv("BOT_IDENTITY"),
     "history_lines": int(os.getenv("BOT_HISTORY_LINES", "5")),
     "discord_token": os.getenv("DISCORD_TOKEN"),
-    "question_prompt": os.getenv("BOT_QUESTION_PROMPT"),
-    "trigger_prompt": os.getenv("BOT_TRIGGER_PROMPT"),
-    "triggers": os.getenv("BOT_TRIGGERS", "").split(","),
-    "trigger_level": float(os.getenv("BOT_TRIGGER_LEVEL", "0.25"))
+    "question_prompt": os.getenv("BOT_QUESTION_PROMPT")
 }
 
 # Configure discord intent for chatting
@@ -87,26 +84,9 @@ async def on_message(message):
     history_list.reverse()
     history_text = json.dumps(history_list)
 
-    # Bots answer questions when messaged directly, if we do this, don't bother with triggers
-    direct_msg = False
+    # Only respond when mentioned directly
     if client.user.mentioned_in(message):
         prompt = format_prompt(bot_config["question_prompt"], message.author.name, remove_id(message.content), history_text)
-        direct_msg = True
-        bot_response = filter_mentions(llm_local(prompt))
-        message_chunks = split_message(bot_response)
-        for chunk in message_chunks:
-            await message.channel.send(chunk)
-    
-    # Figure out if someone said something we should respond to, besides @message these are configured in the identity.json
-    comment_on_it = False
-    for word in bot_config["triggers"]:
-        if word in message.content:
-            comment_on_it = True
-
-    # Bots can respond to trigger words at randomn, this is configured in the identity.json (eg. 0.25 = 25%)
-    # But they should not respond if it was a direct message with the triggers in it
-    if comment_on_it and random.random() <= float(bot_config["trigger_level"]) and direct_msg == False:
-        prompt = format_prompt(bot_config["trigger_prompt"], message.author.name, remove_id(message.content), history_text)
         bot_response = filter_mentions(llm_local(prompt))
         message_chunks = split_message(bot_response)
         for chunk in message_chunks:
