@@ -20,8 +20,8 @@ A Discord bot that provides channel summaries when mentioned with the "summarize
 
 1. Clone this repository:
 ```bash
-git clone https://github.com/yourusername/discord-summary-bot.git
-cd discord-summary-bot
+git clone https://github.com/patw/tilldeer.git
+cd tilldeer
 ```
 
 2. Install dependencies:
@@ -29,7 +29,7 @@ cd discord-summary-bot
 python3 -m pip install -r requirements.txt
 ```
 
-3. Create a `.env` file with your configuration:
+3. Copy `sample.env` to `.env` and modify:
 ```ini
 DISCORD_TOKEN=your_discord_bot_token
 LLM_API_KEY=your_llm_api_key
@@ -37,7 +37,7 @@ LLM_BASE_URL=http://localhost:1234/v1  # Change to your LLM endpoint
 LLM_MODEL=your-model-name
 BOT_IDENTITY=You are a helpful assistant that summarizes Discord channels.
 BOT_QUESTION_PROMPT=User {user} asks: {question}\n\nRecent messages:\n{history}\n\nPlease provide a concise summary:
-BOT_HISTORY_LINES=5  # Number of previous messages to include
+BOT_HISTORY_LINES=100  # Number of previous messages to include
 ```
 
 ## Usage
@@ -59,13 +59,6 @@ You can customize these environment variables:
 - `BOT_HISTORY_LINES`: Number of previous messages to include (default: 5)
 - `BOT_QUESTION_PROMPT`: Template for the LLM prompt
 - `BOT_IDENTITY`: System message for the LLM
-
-## Troubleshooting
-
-**macOS SSL Errors**: If you get certificate errors on macOS, ensure you have `certifi` installed:
-```bash
-python3 -m pip install certifi
-```
 
 ## License
 

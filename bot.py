@@ -1,6 +1,5 @@
 import discord
 import re
-import random
 import os
 import json
 from dotenv import load_dotenv
